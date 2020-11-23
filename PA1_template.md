@@ -139,6 +139,15 @@ qplot(total.steps, binwidth=1000, xlab="total number of steps taken each day")
 
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
 
+```r
+meanTotalSteps <- mean(total.steps, na.rm=TRUE)
+cat (" The mean  total number of steps taken per day is :", meanTotalSteps  )
+```
+
+```
+##  The mean  total number of steps taken per day is : 9354.23
+```
+
 
 
 

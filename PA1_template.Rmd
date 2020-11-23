@@ -40,6 +40,8 @@ head(active)
 ```{r}
 total.steps <- tapply(active$steps, active$date, FUN=sum, na.rm=TRUE)
 qplot(total.steps, binwidth=1000, xlab="total number of steps taken each day")
+meanTotalSteps <- mean(total.steps, na.rm=TRUE)
+cat (" The mean  total number of steps taken per day is :", meanTotalSteps  )
 
 ```
 
