@@ -122,6 +122,28 @@ require(ggthemes)
 
 ```r
 library(scales)
+library(data.table)
+```
+
+```
+## 
+## Attaching package: 'data.table'
+```
+
+```
+## The following objects are masked from 'package:dplyr':
+## 
+##     between, first, last
+```
+
+```
+## The following objects are masked from 'package:lubridate':
+## 
+##     hour, isoweek, mday, minute, month, quarter, second, wday, week,
+##     yday, year
+```
+
+```r
 loadData <- function(dataURL="", destF="default.csv", method = NULL){
   if(!file.exists(destF)){
             temp <- tempfile()
@@ -233,3 +255,49 @@ abline(v=median.spd1, col = c("green"), lty = 2)
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+
+```r
+library (chron)
+```
+
+```
+## Warning: package 'chron' was built under R version 4.0.3
+```
+
+```
+## 
+## Attaching package: 'chron'
+```
+
+```
+## The following objects are masked from 'package:lubridate':
+## 
+##     days, hours, minutes, seconds, years
+```
+
+```r
+active$day <- weekdays(as.Date(active$date))
+attach(active)
+d <- levels(factor(day))
+active$week <- "weekday"
+active[day==d[1],5]<-"weekend"
+active[day==d[6],5]<-"weekend"
+active$week <- as.factor(active$week)
+spiw <- ddply(active, .(interval,week), summarize, steps = mean(steps, na.rm=TRUE))
+max.spiw <- max(spiw$steps)
+max.intw <- spiw[spiw$steps==max(max.spiw),1]
+```
+
+
+
+```r
+library(ggplot2)
+ggplot(data=spiw, aes(x=interval, y=steps, group=week)) + geom_line(aes(color=week))+ facet_wrap(~ week, nrow=2)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+The graphs show different patterns, the steps on the weekend are very similar than on normal days
+
+
+
