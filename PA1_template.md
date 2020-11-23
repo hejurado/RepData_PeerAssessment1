@@ -79,6 +79,36 @@ require(dplyr)
 ```
 
 ```r
+library(plyr)
+```
+
+```
+## ------------------------------------------------------------------------------
+```
+
+```
+## You have loaded plyr after dplyr - this is likely to cause problems.
+## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+## library(plyr); library(dplyr)
+```
+
+```
+## ------------------------------------------------------------------------------
+```
+
+```
+## 
+## Attaching package: 'plyr'
+```
+
+```
+## The following objects are masked from 'package:dplyr':
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize
+```
+
+```r
 require(ggthemes)
 ```
 
@@ -87,8 +117,7 @@ require(ggthemes)
 ```
 
 ```
-## Warning in library(package, lib.loc = lib.loc, character.only = TRUE,
-## logical.return = TRUE, : there is no package called 'ggthemes'
+## Warning: package 'ggthemes' was built under R version 4.0.3
 ```
 
 ```r
@@ -141,21 +170,65 @@ qplot(total.steps, binwidth=1000, xlab="total number of steps taken each day")
 
 ```r
 meanTotalSteps <- mean(total.steps, na.rm=TRUE)
-cat (" The mean  total number of steps taken per day is :", meanTotalSteps  )
+#cat (" The mean  total number of steps taken per day is :", meanTotalSteps  )
 ```
-
-```
-##  The mean  total number of steps taken per day is : 9354.23
-```
-
+The mean total number of steps per day is 9354.2295082 
 
 
 
 ## What is the average daily activity pattern?
 
+```r
+spi <- ddply(active, .(interval), summarize, steps = mean(steps, na.rm=TRUE))
+max.spi <- max(spi$steps)
+max.int <- spi[spi$steps==max(max.spi),1]
+```
+**Plot of the average number of steps taken each interval**
 
+```r
+plot(spi$interval,spi$steps, ylab="Average number of steps per interval",xlab="Interval", main=NULL, type="l", lwd=2, col="green")
+abline(h=max.spi, col = c("red"))
+abline(v=max.int, col = c("black"))
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+The maximum number of steps per interval in average is 206.1698113 and corresponds to the interval 835.
 
 ## Imputing missing values
+
+```r
+missingValues <- dim(active[is.na(active$steps),])[1]
+```
+There are  2304 with missing values
+
+**all missing values are filled in with the average value of the 5-minute intervals**
+
+```r
+active[is.na(active$steps), "steps"] <- mean(active$steps, na.rm=T)
+missing <- is.na(active$steps)
+# How many missing
+table(missing)
+```
+
+```
+## missing
+## FALSE 
+## 17568
+```
+
+**Histogram with  total number  of steps  taken each day and calculate and respor the mean  an median  total number of steps aken per day**
+
+```r
+spd1 <- ddply(active, .(date), summarize, steps = sum(steps))
+mean.spd1 <- mean(spd1$steps, na.rm = TRUE)
+median.spd1 <- median(spd1$steps, na.rm = TRUE)
+hist(active$steps, xlab="Total number of steps per day", main=NULL, col="light green")
+abline(v=mean.spd1, col = c("red"))
+abline(v=median.spd1, col = c("green"), lty = 2)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
 
 
 
